@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text-to-Music Generator</title>
+</head>
+<body>
+    <h1>Text-to-Music Generation</h1>
+    <textarea id="text-input" rows="5" cols="50" placeholder="Enter text for music generation"></textarea><br>
+    <button onclick="generateMusic()">Generate Music</button><br>
+    <audio controls id="audio-player">
+        Your browser does not support the audio element.
+    </audio>
+</body>
+<script>
+    function generateMusic() {
+        var text = document.getElementById('text-input').value;
+        fetch('/generate_music', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: text })
+        })
+        .then(response => response.json())
+        .then(data => {
+            var audioPlayer = document.getElementById('audio-player');
+            audioPlayer.src = URL.createObjectURL(new Blob([data.generated_music]));
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+</html>
